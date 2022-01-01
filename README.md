@@ -8,5 +8,7 @@ Click on the side bar to submit a solution. A smiley face will show you if your 
 was correct.
 
 # Tetris
-
 WIP
+
+# Compiling
+To build these projects, a makefile is included. The makefiles also have options to cross compile for windows.
