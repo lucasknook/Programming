@@ -1,4 +1,4 @@
-IN = main.c rendering.c game.c
+IN = main.c game.c rendering.c
 OUT = tetris
 
 LIBS = -lSDL2 -fsanitize=address
