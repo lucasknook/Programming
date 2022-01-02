@@ -7,11 +7,10 @@
 
 void game_setup(game_t *game);
 
+void game_update(game_t *game, int *frame);
+
 void move_left(game_t *game);
 void move_right(game_t *game);
 void move_down(game_t *game);
-
-/* Testing purposes. */
-void move_up(game_t *game);
 
 #endif

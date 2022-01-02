@@ -19,6 +19,8 @@ int main(int argc, char *argv[]) {
     game_t game;
     game_setup(&game);
 
+    int frame = 0;
+
     /* Event handler. */
     SDL_Event event;
     while (game.status == ONGOING) {
@@ -43,18 +45,16 @@ int main(int argc, char *argv[]) {
                         break;
                     }
 
-                    /* Testing purposes. */
-                    if (event.key.keysym.sym == SDLK_w) {                    
-                        move_up(&game);
-                        break;
-                    }
                     break;
                 default:
                     break;
             }
         }
 
+        game_update(&game, &frame);
+
         render_all(renderer, &game);
+
     }
 
     render_quit(renderer, window);

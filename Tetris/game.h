@@ -5,6 +5,9 @@
 #define COLS 10
 #define ROWS (2 * COLS)
 
+/* Game settings. */
+#define SPEED 60
+
 /* Game states. */
 #define ONGOING 0
 #define GAME_WON 1

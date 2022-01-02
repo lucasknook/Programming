@@ -1,4 +1,5 @@
 #include <SDL2/SDL.h>
+#include <time.h>
 
 #include "game.h"
 #include "rendering.h"
@@ -8,6 +9,11 @@
 
 static tetromino_t current_tetromino;
 
+int generate_random(int l, int r) {
+    srand(time(0));
+    return (int) ((rand() % (r - l + 1)) + l);
+}
+
 void place_tetromino(game_t *game, tetromino_t *tetromino) {
     for (t_int i = 0; i < TETROMINO_GRID_WIDTH; i++) {
         for (t_int j = 0; j < TETROMINO_GRID_WIDTH; j ++) {
@@ -16,6 +22,14 @@ void place_tetromino(game_t *game, tetromino_t *tetromino) {
             }
         }
     }
+}
+
+/* TODO: Remove magic numbers. */
+void place_random_tetronimo(game_t *game) {
+    int random = generate_random(0, 6);
+
+    current_tetromino = create_tetromino(random, 3, 3);
+    place_tetromino(game, &current_tetromino);
 }
 
 void move_tetromino(game_t *game, tetromino_t *tetromino, g_int x, g_int y) {
@@ -38,14 +52,13 @@ void move_tetromino(game_t *game, tetromino_t *tetromino, g_int x, g_int y) {
                         return;
                     }
                 }
-            }
+                if (tetromino->x + i + x < 0 || tetromino->x + i + x > COLS) {
+                    return;
+                }
 
-            if (tetromino->x + i + x < 0 || tetromino->x + i + x > COLS) {
-                return;
-            }
-
-            if (tetromino->y - j - y > ROWS) {
-                return;
+                if (tetromino->y - j - y >= ROWS) {
+                    return;
+                }
             }
         }
     }
@@ -65,6 +78,8 @@ void move_tetromino(game_t *game, tetromino_t *tetromino, g_int x, g_int y) {
     place_tetromino(game, tetromino);
 }
 
+/* TODO: Reset or decrement frames when succesfully moving left or right. */
+
 void move_left(game_t *game) {
     move_tetromino(game, &current_tetromino, LEFT);
 }
@@ -77,9 +92,21 @@ void move_down(game_t *game) {
     move_tetromino(game, &current_tetromino, DOWN);
 }
 
-/* Testing purposes. */
-void move_up(game_t *game) {
-    move_tetromino(game, &current_tetromino, 0, 1);
+void game_update(game_t *game, int *frame) {
+    if (*frame > SPEED) {
+        g_int x = current_tetromino.x;
+        g_int y = current_tetromino.y;
+
+        move_down(game);
+
+        if (current_tetromino.x == x && current_tetromino.y == y) {
+            place_random_tetronimo(game);
+        }
+
+        *frame = 0;
+    } else {
+        *frame = *frame + 1;
+    }
 }
 
 void game_setup(game_t *game) {
@@ -92,27 +119,5 @@ void game_setup(game_t *game) {
         }
     }
 
-    /* Testing. */
-    tetromino_t tetromino_I = create_tetromino(I, 3, 21);
-    place_tetromino(game, &tetromino_I);
-
-    tetromino_t tetromino_Z = create_tetromino(Z, 3, 19);
-    place_tetromino(game, &tetromino_Z);
-
-    tetromino_t tetromino_T = create_tetromino(T, 3, 17);
-    place_tetromino(game, &tetromino_T);
-
-    tetromino_t tetromino_O = create_tetromino(O, 3, 15);
-    place_tetromino(game, &tetromino_O);
-
-    tetromino_t tetromino_L = create_tetromino(L, 3, 13);
-    place_tetromino(game, &tetromino_L);
-
-    tetromino_t tetromino_S = create_tetromino(S, 3, 11);
-    place_tetromino(game, &tetromino_S);
-
-    tetromino_t tetromino_J = create_tetromino(J, 3, 9);
-    place_tetromino(game, &tetromino_J);
-
-    current_tetromino = tetromino_L;
+    place_random_tetronimo(game);
 }
