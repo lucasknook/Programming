@@ -4,6 +4,15 @@
 
 #include "rendering.h"
 
+/* If the colors are the same, return 0, otherwise, return 1. */
+int compare_colors(SDL_Color color_1, SDL_Color color_2) {
+    if (color_1.r == color_2.r && color_1.g == color_2.g && color_1.b == color_2.b) {
+        return 0;
+    }
+
+    return 1;
+}
+
 void render_square(SDL_Renderer *renderer, SDL_Color color, g_int x, g_int y) {
     /* Create rectangle. */
     SDL_Rect rectangle;

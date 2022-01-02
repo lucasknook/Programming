@@ -11,9 +11,10 @@
 #define GAME_OVER 2
 #define ENDED 3
 
-/* Differentiate between pixel and grid positions. */
+/* Differentiate between pixel, game grid and tetromino grid positions. */
 typedef int p_int;
 typedef int g_int;
+typedef int t_int;
 
 /* Game struct. */
 typedef struct {

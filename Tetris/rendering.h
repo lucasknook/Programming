@@ -6,7 +6,7 @@
 #define WINDOW_HEIGHT (2 * WINDOW_WIDTH)
 
 /* Window position. */
-#define WINDOW_POS_X 0
+#define WINDOW_POS_X 1200
 #define WINDOW_POS_Y 0
 
 /* Square size. */
@@ -22,6 +22,8 @@
 #define RED (SDL_Color) {240, 0, 0} //Z-block
 
 #define GREY (SDL_Color) {100, 100, 100} //No block
+
+int compare_colors(SDL_Color color_1, SDL_Color color_2);
 
 void render_all(SDL_Renderer *renderer, game_t *game);
 
