@@ -1,6 +1,10 @@
 #ifndef _GAME_H
 #define _GAME_H
 
+/* Grid size. */
+#define COLS 10
+#define ROWS (2 * COLS)
+
 /* Game states. */
 #define ONGOING 0
 #define GAME_WON 1
@@ -8,9 +12,8 @@
 #define ENDED 3
 
 typedef struct {
+    int grid[COLS][ROWS];
     int status;
 } game_t;
-
-void game_setup(game_t *game);
 
 #endif

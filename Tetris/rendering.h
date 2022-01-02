@@ -1,8 +1,12 @@
 #ifndef _RENDERING_H
 #define _RENDERING_H
 
+/* Window size.*/
 #define SCREEN_WIDTH 300
-#define SCREEN_HEIGHT 600
+#define SCREEN_HEIGHT (2 * SCREEN_WIDTH)
+
+/* Object sizes. */
+#define SQUARE_WIDTH (SCREEN_WIDTH / COLS)
 
 void render_all(SDL_Renderer *renderer, game_t *game);
 

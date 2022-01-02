@@ -4,6 +4,10 @@
 
 #include "rendering.h"
 
+void render_square(SDL_Renderer *renderer, int x, int y) {
+
+}
+
 void render_board(SDL_Renderer *renderer, game_t *game) {
 
 }

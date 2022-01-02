@@ -1,7 +1,7 @@
-IN = main.c game.c rendering.c
+IN = main.c logic.c rendering.c
 OUT = tetris
 
-LIBS = -lSDL2 -fsanitize=address
+LIBS = -lSDL2 # -fsanitize=address
 WINLIBS = -lmingw32 -lSDL2main -lSDL2 -lSDL2_ttf -mwindows
 
 CC = gcc

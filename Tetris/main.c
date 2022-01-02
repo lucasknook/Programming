@@ -1,9 +1,9 @@
 #include <stdio.h>
-#include <stdio.h>
 
 #include <SDL2/SDL.h>
 
 #include "game.h"
+#include "logic.h"
 #include "rendering.h"
 
 int main(int argc, char *argv[]) {
