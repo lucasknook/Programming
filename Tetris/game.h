@@ -11,8 +11,13 @@
 #define GAME_OVER 2
 #define ENDED 3
 
+/* Differentiate between pixel and grid positions. */
+typedef int p_int;
+typedef int g_int;
+
+/* Game struct. */
 typedef struct {
-    int grid[COLS][ROWS];
+    SDL_Color grid[COLS][ROWS];
     int status;
 } game_t;
 

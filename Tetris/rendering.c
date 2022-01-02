@@ -4,12 +4,31 @@
 
 #include "rendering.h"
 
-void render_square(SDL_Renderer *renderer, int x, int y) {
+void render_square(SDL_Renderer *renderer, SDL_Color color, g_int x, g_int y) {
+    /* Create rectangle. */
+    SDL_Rect rectangle;
+    rectangle.w = SQUARE_WIDTH;
+    rectangle.h = SQUARE_WIDTH;
+    rectangle.x = SQUARE_WIDTH * x;
+    rectangle.y = SQUARE_WIDTH * y;
 
+    /* Set rectangle background color (based on grid value). */
+    SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, 255);
+    /* Render rectangle background. */
+    SDL_RenderFillRect(renderer, &rectangle);
+
+    /* Set rectangle outline color (black). */
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+    /* Render rectangle outline. */
+    SDL_RenderDrawRect(renderer, &rectangle);
 }
 
 void render_board(SDL_Renderer *renderer, game_t *game) {
-
+    for (g_int i = 0; i < COLS; i++) {
+        for (g_int j = 0; j < ROWS; j++) {
+            render_square(renderer, game->grid[i][j], i, j);
+        }
+    }
 }
 
 void render_all(SDL_Renderer *renderer, game_t *game) {
@@ -29,7 +48,7 @@ int render_init(SDL_Renderer **renderer, SDL_Window **window) {
     }
 
     /* Create a window. */
-    *window = SDL_CreateWindow("Tetris", 100, 100, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
+    *window = SDL_CreateWindow("Tetris", WINDOW_POS_X, WINDOW_POS_Y, WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_SHOWN);
     if (!window) {
         fprintf(stderr, "SDL_CreateWindow ERROR: %s\n", SDL_GetError());
         return EXIT_FAILURE;
