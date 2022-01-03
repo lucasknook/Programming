@@ -1,6 +1,6 @@
 #include <stdio.h>
-
 #include <SDL2/SDL.h>
+#include <stdbool.h>
 
 #include "game.h"
 #include "logic.h"
@@ -42,6 +42,21 @@ int main(int argc, char *argv[]) {
 
                     if (event.key.keysym.sym == SDLK_s) {                    
                         move_down(&game);
+                        break;
+                    }
+
+                    if (event.key.keysym.sym == SDLK_RETURN) {                    
+                        rotate_tetromino(&game, 1);
+                        break;
+                    }
+
+                    if (event.key.keysym.sym == SDLK_RSHIFT) {                    
+                        rotate_tetromino(&game, 0);
+                        break;
+                    }
+
+                    if (event.key.keysym.sym == SDLK_w) {                    
+                        fast_drop(&game, &frame);
                         break;
                     }
 

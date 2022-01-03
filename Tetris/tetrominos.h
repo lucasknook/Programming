@@ -13,11 +13,13 @@
 #define TETROMINO_GRID_WIDTH 4
 
 typedef struct {
-    SDL_Color color;
+    int name;
+    int rotation;
     g_int x, y;
+    SDL_Color color;
     t_int squares[TETROMINO_GRID_WIDTH][TETROMINO_GRID_WIDTH];
 } tetromino_t;
 
-tetromino_t create_tetromino(int name, g_int x, g_int y);
+tetromino_t create_tetromino(int name, g_int x, g_int y, int rotation);
 
 #endif

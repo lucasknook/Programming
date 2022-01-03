@@ -2,11 +2,16 @@
 
 #include "game.h"
 #include "rendering.h"
+#include "logic.h"
 
 #include "tetrominos.h"
 
-tetromino_t create_tetromino(int name, g_int x, g_int y) {
+tetromino_t create_tetromino(int name, g_int x, g_int y, int rotation) {
     tetromino_t tetromino;
+
+    tetromino.name = name;
+
+    tetromino.rotation = rotation;
 
     tetromino.x = x;
     tetromino.y = y;
@@ -17,27 +22,93 @@ tetromino_t create_tetromino(int name, g_int x, g_int y) {
         }
     }
     
-    switch(name) {
+    switch (name) {
         case I:
             tetromino.color = LIGHT_BLUE;
-            tetromino.squares[0][2] = 1;
-            tetromino.squares[1][2] = 1;
-            tetromino.squares[2][2] = 1;
-            tetromino.squares[3][2] = 1;
+            switch (rotation) {
+                case 0:
+                    tetromino.squares[0][2] = 1;
+                    tetromino.squares[1][2] = 1;
+                    tetromino.squares[2][2] = 1;
+                    tetromino.squares[3][2] = 1;
+                    break;
+                case 1:
+                    tetromino.squares[2][0] = 1;
+                    tetromino.squares[2][1] = 1;
+                    tetromino.squares[2][2] = 1;
+                    tetromino.squares[2][3] = 1;
+                    break;
+                case 2:
+                    tetromino.squares[0][1] = 1;
+                    tetromino.squares[1][1] = 1;
+                    tetromino.squares[2][1] = 1;
+                    tetromino.squares[3][1] = 1;
+                    break;
+                case 3:
+                    tetromino.squares[1][0] = 1;
+                    tetromino.squares[1][1] = 1;
+                    tetromino.squares[1][2] = 1;
+                    tetromino.squares[1][3] = 1;
+                    break;
+            }
             break;
         case J:
             tetromino.color = BLUE;
-            tetromino.squares[0][1] = 1;
-            tetromino.squares[0][2] = 1;
-            tetromino.squares[1][1] = 1;
-            tetromino.squares[2][1] = 1;
+            switch (rotation) {
+                case 0:
+                    tetromino.squares[0][1] = 1;
+                    tetromino.squares[0][2] = 1;
+                    tetromino.squares[1][1] = 1;
+                    tetromino.squares[2][1] = 1;
+                    break;
+                case 1:
+                    tetromino.squares[1][0] = 1;
+                    tetromino.squares[1][1] = 1;
+                    tetromino.squares[1][2] = 1;
+                    tetromino.squares[2][2] = 1;
+                    break;
+                case 2:
+                    tetromino.squares[0][1] = 1;
+                    tetromino.squares[1][1] = 1;
+                    tetromino.squares[2][1] = 1;
+                    tetromino.squares[2][0] = 1;
+                    break;
+                case 3:
+                    tetromino.squares[0][0] = 1;
+                    tetromino.squares[1][0] = 1;
+                    tetromino.squares[1][1] = 1;
+                    tetromino.squares[1][2] = 1;
+                    break;
+            }
             break;
         case L:
             tetromino.color = ORANGE;
-            tetromino.squares[0][1] = 1;
-            tetromino.squares[1][1] = 1;
-            tetromino.squares[2][1] = 1;
-            tetromino.squares[2][2] = 1;
+            switch (rotation) {
+                case 0:
+                    tetromino.squares[0][1] = 1;
+                    tetromino.squares[1][1] = 1;
+                    tetromino.squares[2][1] = 1;
+                    tetromino.squares[2][2] = 1;
+                    break;
+                case 1:
+                    tetromino.squares[1][0] = 1;
+                    tetromino.squares[2][0] = 1;
+                    tetromino.squares[1][1] = 1;
+                    tetromino.squares[1][2] = 1;
+                    break;
+                case 2:
+                    tetromino.squares[0][0] = 1;
+                    tetromino.squares[0][1] = 1;
+                    tetromino.squares[1][1] = 1;
+                    tetromino.squares[2][1] = 1;
+                    break;
+                case 3:
+                    tetromino.squares[1][0] = 1;
+                    tetromino.squares[1][1] = 1;
+                    tetromino.squares[1][2] = 1;
+                    tetromino.squares[0][2] = 1;
+                    break;
+            }
             break;
         case O:
             tetromino.color = YELLOW;
@@ -48,24 +119,90 @@ tetromino_t create_tetromino(int name, g_int x, g_int y) {
             break;
         case S:
             tetromino.color = GREEN;
-            tetromino.squares[0][1] = 1;
-            tetromino.squares[1][1] = 1;
-            tetromino.squares[1][2] = 1;
-            tetromino.squares[2][2] = 1;
+            switch (rotation) {
+                case 0:
+                    tetromino.squares[0][1] = 1;
+                    tetromino.squares[1][1] = 1;
+                    tetromino.squares[1][2] = 1;
+                    tetromino.squares[2][2] = 1;
+                    break;
+                case 1:
+                    tetromino.squares[1][1] = 1;
+                    tetromino.squares[1][2] = 1;
+                    tetromino.squares[2][1] = 1;
+                    tetromino.squares[2][0] = 1;
+                    break;
+                case 2:
+                    tetromino.squares[1][1] = 1;
+                    tetromino.squares[0][0] = 1;
+                    tetromino.squares[1][0] = 1;
+                    tetromino.squares[2][1] = 1;
+                    break;
+                case 3:
+                    tetromino.squares[1][1] = 1;
+                    tetromino.squares[0][2] = 1;
+                    tetromino.squares[0][1] = 1;
+                    tetromino.squares[1][0] = 1;
+                    break;
+            }
             break;
         case T:
             tetromino.color = PURPLE;
-            tetromino.squares[0][1] = 1;
-            tetromino.squares[1][1] = 1;
-            tetromino.squares[1][2] = 1;
-            tetromino.squares[2][1] = 1;
+            switch (rotation) {
+                case 0:
+                    tetromino.squares[0][1] = 1;
+                    tetromino.squares[1][1] = 1;
+                    tetromino.squares[1][2] = 1;
+                    tetromino.squares[2][1] = 1;
+                    break;
+                case 1:
+                    tetromino.squares[1][1] = 1;
+                    tetromino.squares[1][0] = 1;
+                    tetromino.squares[1][2] = 1;
+                    tetromino.squares[2][1] = 1;
+                    break;
+                case 2:
+                    tetromino.squares[1][1] = 1;
+                    tetromino.squares[0][1] = 1;
+                    tetromino.squares[1][0] = 1;
+                    tetromino.squares[2][1] = 1;
+                    break;
+                case 3:
+                    tetromino.squares[1][1] = 1;
+                    tetromino.squares[0][1] = 1;
+                    tetromino.squares[1][0] = 1;
+                    tetromino.squares[1][2] = 1;
+                    break;
+            }
             break;
         case Z:
-            tetromino.squares[0][2] = 1;
-            tetromino.squares[1][1] = 1;
-            tetromino.squares[1][2] = 1;
-            tetromino.squares[2][1] = 1;
             tetromino.color = RED;
+            switch (rotation) {
+                case 0:
+                    tetromino.squares[0][2] = 1;
+                    tetromino.squares[1][1] = 1;
+                    tetromino.squares[1][2] = 1;
+                    tetromino.squares[2][1] = 1;
+                    break;
+                case 1:
+                    tetromino.squares[1][1] = 1;
+                    tetromino.squares[1][0] = 1;
+                    tetromino.squares[2][1] = 1;
+                    tetromino.squares[2][2] = 1;
+                    break;
+                case 2:
+                    tetromino.squares[1][1] = 1;
+                    tetromino.squares[0][1] = 1;
+                    tetromino.squares[1][0] = 1;
+                    tetromino.squares[2][0] = 1;
+                    break;
+                case 3:
+                    tetromino.squares[1][1] = 1;
+                    tetromino.squares[0][0] = 1;
+                    tetromino.squares[0][1] = 1;
+                    tetromino.squares[1][2] = 1;
+                    break;
+            }
             break;
     }
 
