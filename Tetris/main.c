@@ -31,17 +31,17 @@ int main(int argc, char *argv[]) {
                     break;
                 case SDL_KEYDOWN:
                     if (event.key.keysym.sym == SDLK_a) {                    
-                        move_left(&game);
+                        move_tetromino(&game, LEFT, 1);
                         break;
                     }
 
                     if (event.key.keysym.sym == SDLK_d) {                    
-                        move_right(&game);
+                        move_tetromino(&game, RIGHT, 1);
                         break;
                     }
 
                     if (event.key.keysym.sym == SDLK_s) {                    
-                        move_down(&game);
+                        move_tetromino(&game, DOWN, 1);
                         break;
                     }
 

@@ -7,6 +7,9 @@
 
 #include "logic.h"
 
+/* TODO: Remove magic numbers.*/
+/* TODO: Reset or decrement frames when succesfully moving left or right. */
+
 static tetromino_t current_tetromino;
 
 void check_and_clear_lines(game_t *game) {
@@ -55,11 +58,6 @@ void place_tetromino(game_t *game, tetromino_t *tetromino) {
     }
 }
 
-/* TODO: Remove magic numbers. */
-/* TODO: Fast drop. */
-/* TODO: r. 131. */
-/* TODO: Reset or decrement frames when succesfully moving left or right. */
-
 void place_random_tetronimo(game_t *game) {
     /* Clear lines. */
     check_and_clear_lines(game);
@@ -71,7 +69,48 @@ void place_random_tetronimo(game_t *game) {
     place_tetromino(game, &current_tetromino);
 }
 
-void move_tetromino(game_t *game, g_int dx, g_int dy) {
+void remove_tetromino(game_t *game) {
+    g_int x = current_tetromino.x;
+    g_int y = current_tetromino.y;
+
+    for (t_int i = 0; i < TETROMINO_GRID_WIDTH; i++) {
+        for (t_int j = 0; j < TETROMINO_GRID_WIDTH; j++) {
+            if (current_tetromino.squares[i][j]) {
+                game->grid[x + i][y - j] = GREY;
+            }
+        }
+    }
+}
+
+/* Check if a tetromino is in a valid position. 
+ * If it is, return 1, otherise, return 0.
+ */
+int tetromino_invalid_position(game_t *game, tetromino_t *tetromino) {
+    g_int x = tetromino->x;
+    g_int y = tetromino->y;
+
+    for (t_int i = 0; i < TETROMINO_GRID_WIDTH; i++) {
+        for (t_int j = 0; j < TETROMINO_GRID_WIDTH; j++) {
+            if (tetromino->squares[i][j]) {
+                if (compare_colors(game->grid[x + i][y - j], GREY)) {
+                    return 1;
+                }
+
+                if (tetromino->x + i < 0 || tetromino->x + i > COLS) {
+                    return 1;
+                }
+
+                if (tetromino->y - j >= ROWS) {
+                    return 1;
+                }
+            }
+        }
+    }
+
+    return 0;
+}
+
+void move_tetromino(game_t *game, g_int dx, g_int dy, int check_valid) {
     /* Create a new tetromino. */
     int name = current_tetromino.name;
 
@@ -83,37 +122,12 @@ void move_tetromino(game_t *game, g_int dx, g_int dy) {
     tetromino_t moved_tetromino = create_tetromino(name, x + dx, y - dy, rotation);
 
     /* Remove the old tetromino. */
-    for (t_int i = 0; i < TETROMINO_GRID_WIDTH; i++) {
-        for (t_int j = 0; j < TETROMINO_GRID_WIDTH; j++) {
-            if (current_tetromino.squares[i][j]) {
-                game->grid[x + i][y - j] = GREY;
-            }
-        }
-    }
+    remove_tetromino(game);
 
     /* Check if the movement is valid. */
-    for (t_int i = 0; i < TETROMINO_GRID_WIDTH; i++) {
-        for (t_int j = 0; j < TETROMINO_GRID_WIDTH; j++) {
-            if (moved_tetromino.squares[i][j]) {
-                if (compare_colors(game->grid[x + dx + i][y - dy - j], GREY)) {
-                    /* Place the old tetromino back. */
-                    place_tetromino(game, &current_tetromino);
-                    return;
-                }
-
-                if (moved_tetromino.x + i < 0 || moved_tetromino.x + i > COLS) {
-                    /* Place the old tetronimo back. */
-                    place_tetromino(game, &current_tetromino);
-                    return;
-                }
-
-                if (moved_tetromino.y - j >= ROWS) {
-                    /* Place the old tetronimo back. */
-                    place_tetromino(game, &current_tetromino);
-                    return;
-                }
-            }
-        }
+    if (check_valid && tetromino_invalid_position(game, &moved_tetromino)) {
+        place_tetromino(game, &current_tetromino);
+        return;
     }
 
     /* Place the moved tetronimo and make it the current one. */
@@ -121,7 +135,23 @@ void move_tetromino(game_t *game, g_int dx, g_int dy) {
     current_tetromino = moved_tetromino;
 }
 
-void rotate_tetromino(game_t *game, int clockwise) {
+int new_rotation(int rotation, int direction) {
+    if (direction) {
+        if (rotation == 3) {
+            return 0;
+        }
+
+        return rotation + 1;
+    }
+
+    if (rotation == 0) {
+        return 3;
+    }
+
+    return rotation - 1;
+}
+
+void rotate_tetromino(game_t *game, int direction) {
     if (current_tetromino.name == O) {
         return;
     }
@@ -133,57 +163,17 @@ void rotate_tetromino(game_t *game, int clockwise) {
     t_int y = current_tetromino.y;
 
     int rotation = current_tetromino.rotation;
-    if (clockwise) {
-        if (rotation == 3) {
-            rotation = 0;
-        } else {
-            rotation++;
-        }
-    } else {
-        if (rotation == 0) {
-            rotation = 3;
-        } else {
-            rotation--;
-        }
-    }
+    rotation = new_rotation(rotation, direction);
 
     tetromino_t rotated_tetromino = create_tetromino(name, x, y, rotation);
 
     /* Remove the old tetronimo. */
-    for (t_int i = 0; i < TETROMINO_GRID_WIDTH; i++) {
-        for (t_int j = 0; j < TETROMINO_GRID_WIDTH; j++) {
-            if (current_tetromino.squares[i][j]) {
-                game->grid[x + i][y - j] = GREY;
-            }
-        }
-    }
+    remove_tetromino(game);
 
     /* Check if the rotation is valid. */
-    for (t_int i = 0; i < TETROMINO_GRID_WIDTH; i++) {
-        for (t_int j = 0; j < TETROMINO_GRID_WIDTH; j++) {
-            if (rotated_tetromino.squares[i][j]) {
-                if (compare_colors(game->grid[x + i][y - j], GREY)) {
-                    /* Place the old tetronimo back. */
-                    place_tetromino(game, &current_tetromino);
-                    return;
-                }
-
-                /* TODO: Make sure that you can still turn at the borders,
-                 * by moving to the left or right. If successfull, try to rotate again.
-                 */
-                if (rotated_tetromino.x + i < 0 || rotated_tetromino.x + i > COLS) {
-                    /* Place the old tetronimo back. */
-                    place_tetromino(game, &current_tetromino);
-                    return;
-                }
-
-                if (rotated_tetromino.y - j >= ROWS) {
-                    /* Place the old tetronimo back. */
-                    place_tetromino(game, &current_tetromino);
-                    return;
-                }
-            }
-        }
+    if (tetromino_invalid_position(game, &rotated_tetromino)) {
+        place_tetromino(game, &current_tetromino);
+        return;
     }
 
     /* Place the rotated tetronimo and make it the current one. */
@@ -191,21 +181,9 @@ void rotate_tetromino(game_t *game, int clockwise) {
     current_tetromino = rotated_tetromino;
 }
 
-void move_left(game_t *game) {
-    move_tetromino(game, LEFT);
-}
-
-void move_right(game_t *game) {
-    move_tetromino(game, RIGHT);
-}
-
-void move_down(game_t *game) {
-    move_tetromino(game, DOWN);
-}
-
 void fast_drop(game_t *game, int *frame) {
     for (int i = 0; i < 20; i++) {
-        move_tetromino(game, DOWN);
+        move_tetromino(game, DOWN, 1);
     }
 
     place_random_tetronimo(game);
@@ -218,7 +196,7 @@ void game_update(game_t *game, int *frame) {
         g_int x = current_tetromino.x;
         g_int y = current_tetromino.y;
 
-        move_down(game);
+        move_tetromino(game, DOWN, 1);
 
         if (current_tetromino.x == x && current_tetromino.y == y) {
             place_random_tetronimo(game);

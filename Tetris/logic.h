@@ -12,11 +12,9 @@ void game_setup(game_t *game);
 
 void game_update(game_t *game, int *frame);
 
-void move_left(game_t *game);
-void move_right(game_t *game);
-void move_down(game_t *game);
+void move_tetromino(game_t *game, int dx, int dy, int check_valid);
 
-void rotate_tetromino(game_t *game, int clockwise);
+void rotate_tetromino(game_t *game, int direction);
 
 void fast_drop(game_t *game, int *frame);
 
