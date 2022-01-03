@@ -9,6 +9,37 @@
 
 static tetromino_t current_tetromino;
 
+void check_and_clear_lines(game_t *game) {
+    for (g_int j = ROWS - 1; j > 0; j--) {
+        int amount = 0;
+
+        for (g_int i = 0; i < COLS; i++) {
+            if (compare_colors(game->grid[i][j], GREY)) {
+                amount++;
+            } else break;
+        }
+
+        if (amount == 10) {
+            /* Clear the line. */
+            for (g_int i = 0; i < COLS; i++) {
+                game->grid[i][j] = GREY;
+            }
+
+            /* Move everything above the line down. */
+            for (g_int y = j; y > 0; y--) {
+                for (g_int x = 0; x < COLS; x++) {
+                    game->grid[x][y] = game->grid[x][y - 1];
+                }
+            }
+
+            /* Check the removed line again, since there could be
+             * more than one line that has to be cleared.
+             */
+            j++;
+        }
+    }
+}
+
 int generate_random(int l, int r) {
     srand(time(0));
     return (int) ((rand() % (r - l + 1)) + l);
@@ -27,8 +58,13 @@ void place_tetromino(game_t *game, tetromino_t *tetromino) {
 /* TODO: Remove magic numbers. */
 /* TODO: Fast drop. */
 /* TODO: r. 131. */
+/* TODO: Reset or decrement frames when succesfully moving left or right. */
 
 void place_random_tetronimo(game_t *game) {
+    /* Clear lines. */
+    check_and_clear_lines(game);
+
+    /* Place a new random tetronimo. */
     int random = generate_random(0, 6);
 
     current_tetromino = create_tetromino(random, 3, 3, 0);
@@ -154,8 +190,6 @@ void rotate_tetromino(game_t *game, int clockwise) {
     place_tetromino(game, &rotated_tetromino);
     current_tetromino = rotated_tetromino;
 }
-
-/* TODO: Reset or decrement frames when succesfully moving left or right. */
 
 void move_left(game_t *game) {
     move_tetromino(game, LEFT);
