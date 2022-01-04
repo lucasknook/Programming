@@ -83,20 +83,13 @@ int generate_random(int l, int r) {
 }
 
 void generate_bag(void) {
-    // bag[0] = I;
-    // bag[1] = J;
-    // bag[2] = L;
-    // bag[3] = O;
-    // bag[4] = S;
-    // bag[5] = T;
-    // bag[6] = Z;
     bag[0] = I;
-    bag[1] = I;
-    bag[2] = I;
-    bag[3] = I;
-    bag[4] = I;
-    bag[5] = I;
-    bag[6] = I;
+    bag[1] = J;
+    bag[2] = L;
+    bag[3] = O;
+    bag[4] = S;
+    bag[5] = T;
+    bag[6] = Z;
 
     /* Keeps track of the amount of tetromino's in the bag. */
     bag[7] = BAG_SIZE;
