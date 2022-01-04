@@ -2,8 +2,8 @@
 #define _RENDERING_H
 
 /* Window size.*/
-#define WINDOW_WIDTH 500
-#define WINDOW_HEIGHT (2 * WINDOW_WIDTH)
+#define WINDOW_WIDTH 400
+#define WINDOW_HEIGHT (2 * WINDOW_WIDTH + EXTRA_ROWS * (WINDOW_WIDTH / COLS))
 
 /* Window position. */
 #define WINDOW_POS_X 1200

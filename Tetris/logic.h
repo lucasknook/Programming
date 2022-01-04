@@ -8,6 +8,8 @@
 #define CLOCKWISE 0
 #define COUNTER_CLOCKWISE 1
 
+#define BAG_SIZE 7
+
 void game_setup(game_t *game);
 
 void game_update(game_t *game, int *frame);

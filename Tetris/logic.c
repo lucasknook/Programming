@@ -12,6 +12,9 @@
 
 static tetromino_t current_tetromino;
 
+/* bag[BAG_SIZE + 1] keeps track of the amount of tetromino's in the bag. */
+int bag[BAG_SIZE + 1];
+
 void check_and_clear_lines(game_t *game) {
     for (g_int j = ROWS - 1; j > 0; j--) {
         int amount = 0;
@@ -43,11 +46,6 @@ void check_and_clear_lines(game_t *game) {
     }
 }
 
-int generate_random(int l, int r) {
-    srand(time(0));
-    return (int) ((rand() % (r - l + 1)) + l);
-}
-
 void place_tetromino(game_t *game, tetromino_t *tetromino) {
     for (t_int i = 0; i < TETROMINO_GRID_WIDTH; i++) {
         for (t_int j = 0; j < TETROMINO_GRID_WIDTH; j ++) {
@@ -58,14 +56,55 @@ void place_tetromino(game_t *game, tetromino_t *tetromino) {
     }
 }
 
+int generate_random(int l, int r) {
+    srand(time(0));
+    return ((rand() % (r - l + 1)) + l);
+}
+
+void generate_bag(void) {
+    bag[0] = I;
+    bag[1] = J;
+    bag[2] = L;
+    bag[3] = O;
+    bag[4] = S;
+    bag[5] = T;
+    bag[6] = Z;
+
+    /* Keeps track of the amount of tetromino's in the bag. */
+    bag[7] = BAG_SIZE;
+}
+
+int generate_random_from_bag(void) {
+    if (bag[BAG_SIZE] == 0) {
+        generate_bag();
+    }
+
+    /* Generate random number from 0 to amount of pieces in the bag. */
+    int random = generate_random(0, bag[BAG_SIZE] - 1);
+
+    int random_from_bag = bag[random];
+
+    for (int i = random; i < bag[BAG_SIZE]; i++) {
+        bag[i] = bag[i + 1];
+    }
+
+    bag[BAG_SIZE] = bag[BAG_SIZE] - 1;
+
+    return random_from_bag;
+}
+
 void place_random_tetronimo(game_t *game) {
     /* Clear lines. */
     check_and_clear_lines(game);
 
     /* Place a new random tetronimo. */
-    int random = generate_random(0, 6);
+    int random = generate_random_from_bag();
 
-    current_tetromino = create_tetromino(random, 3, 3, 0);
+    if (random == I) {
+        current_tetromino = create_tetromino(random, 3, EXTRA_ROWS + 1, 0);
+    } else {
+        current_tetromino = create_tetromino(random, 3, EXTRA_ROWS, 0);
+    }
     place_tetromino(game, &current_tetromino);
 }
 
@@ -607,6 +646,8 @@ void game_setup(game_t *game) {
             game->grid[i][j] = GREY;
         }
     }
+
+    generate_bag();
 
     place_random_tetronimo(game);
 }
