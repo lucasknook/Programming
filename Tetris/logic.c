@@ -29,7 +29,7 @@ int check_game_over(game_t *game) {
         }
     }
     if (oob_count == 4) {
-        game->status = ENDED;
+        game->status = GAME_OVER;
         return 1;
     } else {
         return 0;
@@ -680,4 +680,40 @@ void game_setup(game_t *game) {
     generate_bag();
 
     place_random_tetronimo(game);
+}
+
+void game_end(SDL_Renderer *renderer, game_t *game) {
+    if (game->status == GAME_OVER) {
+        for (int j = 0; j < ROWS; j++) {
+            for (int i = 0; i < COLS; i++) {
+                game->grid[i][j] = DARK_GREY;
+                render_all(renderer, game);
+                SDL_Delay(5);
+            }
+        }
+
+        game->grid[3][9] = GREY;
+        game->grid[6][9] = GREY;
+        render_all(renderer, game);
+        SDL_Delay(10);
+
+        game->grid[3][10] = GREY;
+        game->grid[6][10] = GREY;
+        render_all(renderer, game);
+        SDL_Delay(20);
+
+        game->grid[3][12] = GREY;
+        game->grid[4][12] = GREY;
+        game->grid[5][12] = GREY;
+        game->grid[6][12] = GREY;
+        render_all(renderer, game);
+        SDL_Delay(10);
+
+        game->grid[2][13] = GREY;
+        game->grid[7][13] = GREY;
+        render_all(renderer, game);
+        SDL_Delay(10);
+
+        SDL_Delay(5000);
+    }
 }

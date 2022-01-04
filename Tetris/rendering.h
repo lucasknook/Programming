@@ -22,6 +22,7 @@
 #define RED (SDL_Color) {240, 0, 0} //Z-block
 
 #define GREY (SDL_Color) {100, 100, 100} //No block
+#define DARK_GREY (SDL_Color) {50, 50, 50} //Game over block
 
 int compare_colors(SDL_Color color_1, SDL_Color color_2);
 

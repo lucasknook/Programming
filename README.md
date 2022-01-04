@@ -19,10 +19,11 @@ In testing fase:
 Super Rotation System (SRS), to allow for wall kicks.
 
 To be implemented: 
-Scoreboard, game over, hold pieces, better random generator.
+Scoreboard, hold pieces, better random generator.
 
 WIP:
 Better random generator.
+Game over.
 
 # Compiling
 To build these projects, a makefile is included. The makefiles also have options to cross compile for windows.

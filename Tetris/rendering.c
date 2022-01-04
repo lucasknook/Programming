@@ -44,11 +44,11 @@ void render_board(SDL_Renderer *renderer, game_t *game) {
         }
     }
 
-    /* Render the game over line. */
-    SDL_SetRenderDrawColor(renderer, RED.r, RED.g, RED.b, 255);
-    for (int i = EXTRA_ROWS * SQUARE_WIDTH - 3; i < EXTRA_ROWS * SQUARE_WIDTH + 3; i++) {
-        SDL_RenderDrawLine(renderer, 0, i , WINDOW_WIDTH, i);
-    }
+    // /* Render the game over line. */
+    // SDL_SetRenderDrawColor(renderer, RED.r, RED.g, RED.b, 255);
+    // for (int i = EXTRA_ROWS * SQUARE_WIDTH - 3; i < EXTRA_ROWS * SQUARE_WIDTH + 3; i++) {
+    //     SDL_RenderDrawLine(renderer, 0, i , WINDOW_WIDTH, i);
+    // }
 }
 
 void render_all(SDL_Renderer *renderer, game_t *game) {

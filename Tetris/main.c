@@ -71,6 +71,8 @@ int main(int argc, char *argv[]) {
         render_all(renderer, &game);
 
     }
+    
+    game_end(renderer, &game);
 
     render_quit(renderer, window);
 
