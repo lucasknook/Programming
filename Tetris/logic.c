@@ -170,19 +170,409 @@ void rotate_tetromino(game_t *game, int direction) {
     /* Remove the old tetronimo. */
     remove_tetromino(game);
 
-    /* Check if the rotation is valid. */
-    if (tetromino_invalid_position(game, &rotated_tetromino)) {
-        place_tetromino(game, &current_tetromino);
+    /* Check basic rotation. */
+    if (!tetromino_invalid_position(game, &rotated_tetromino)) {
+
+        /* Place the rotated tetronimo and make it the current one. */
+        place_tetromino(game, &rotated_tetromino);
+        current_tetromino = rotated_tetromino;
+
         return;
     }
 
-    /* Place the rotated tetronimo and make it the current one. */
-    place_tetromino(game, &rotated_tetromino);
-    current_tetromino = rotated_tetromino;
+    /* Wall kick system using the data table on the wiki. */
+    int index;
+
+    if (direction == 1) {
+        switch (rotation) {
+            case 0: 
+                index = 6;
+                break;
+            case 1:
+                index = 0;
+                break;
+            case 2:
+                index = 2;
+                break;
+            case 3:
+                index = 4;
+                break;
+        }
+    }
+
+    if (direction == 0) {
+        switch (rotation) {
+            case 0: 
+                index = 1;
+                break;
+            case 1:
+                index = 3;
+                break;
+            case 2:
+                index = 5;
+                break;
+            case 3:
+                index = 7;
+                break;
+        }
+    }
+
+    /* J, L, T, S, Z Wall Kicks. */
+    if (name != I) {
+        switch (index) {
+            case 0:
+                /* Test 2. */
+                rotated_tetromino = create_tetromino(name, x - 1, y, rotation);
+                if (tetromino_invalid_position(game, &rotated_tetromino)) {
+                    /* Test 3. */
+                    rotated_tetromino = create_tetromino(name, x - 1, y - 1, rotation);
+                    if (tetromino_invalid_position(game, &rotated_tetromino)) {
+                        /* Test 4. */
+                        rotated_tetromino = create_tetromino(name, x, y + 2, rotation);
+                        if (tetromino_invalid_position(game, &rotated_tetromino)) {
+                            /* Test 5. */
+                            rotated_tetromino = create_tetromino(name, x - 1, y + 2, rotation);
+                            if (tetromino_invalid_position(game, &rotated_tetromino)) {
+                                break;
+                            }
+                        }
+                    }
+                }
+                place_tetromino(game, &rotated_tetromino);
+                current_tetromino = rotated_tetromino;
+                return;
+            case 1:
+                /* Test 2. */
+                rotated_tetromino = create_tetromino(name, x + 1, y, rotation);
+                if (tetromino_invalid_position(game, &rotated_tetromino)) {
+                    /* Test 3. */
+                    rotated_tetromino = create_tetromino(name, x + 1, y + 1, rotation);
+                    if (tetromino_invalid_position(game, &rotated_tetromino)) {
+                        /* Test 4. */
+                        rotated_tetromino = create_tetromino(name, x, y - 2, rotation);
+                        if (tetromino_invalid_position(game, &rotated_tetromino)) {
+                            /* Test 5. */
+                            rotated_tetromino = create_tetromino(name, x + 1, y - 2, rotation);
+                            if (tetromino_invalid_position(game, &rotated_tetromino)) {
+                                break;
+                            }
+                        }
+                    }
+                }
+                place_tetromino(game, &rotated_tetromino);
+                current_tetromino = rotated_tetromino;
+                return;
+            case 2:
+                /* Test 2. */
+                rotated_tetromino = create_tetromino(name, x + 1, y, rotation);
+                if (tetromino_invalid_position(game, &rotated_tetromino)) {
+                    /* Test 3. */
+                    rotated_tetromino = create_tetromino(name, x + 1, y + 1, rotation);
+                    if (tetromino_invalid_position(game, &rotated_tetromino)) {
+                        /* Test 4. */
+                        rotated_tetromino = create_tetromino(name, x, y - 2, rotation);
+                        if (tetromino_invalid_position(game, &rotated_tetromino)) {
+                            /* Test 5. */
+                            rotated_tetromino = create_tetromino(name, x + 1, y - 2, rotation);
+                            if (tetromino_invalid_position(game, &rotated_tetromino)) {
+                                break;
+                            }
+                        }
+                    }
+                }
+                place_tetromino(game, &rotated_tetromino);
+                current_tetromino = rotated_tetromino;
+                return;
+            case 3:
+                /* Test 2. */
+                rotated_tetromino = create_tetromino(name, x - 1, y, rotation);
+                if (tetromino_invalid_position(game, &rotated_tetromino)) {
+                    /* Test 3. */
+                    rotated_tetromino = create_tetromino(name, x - 1, y - 1, rotation);
+                    if (tetromino_invalid_position(game, &rotated_tetromino)) {
+                        /* Test 4. */
+                        rotated_tetromino = create_tetromino(name, x, y + 2, rotation);
+                        if (tetromino_invalid_position(game, &rotated_tetromino)) {
+                            /* Test 5. */
+                            rotated_tetromino = create_tetromino(name, x - 1, y + 2, rotation);
+                            if (tetromino_invalid_position(game, &rotated_tetromino)) {
+                                break;
+                            }
+                        }
+                    }
+                }
+                place_tetromino(game, &rotated_tetromino);
+                current_tetromino = rotated_tetromino;
+                return;
+            case 4:
+                /* Test 2. */
+                rotated_tetromino = create_tetromino(name, x + 1, y, rotation);
+                if (tetromino_invalid_position(game, &rotated_tetromino)) {
+                    /* Test 3. */
+                    rotated_tetromino = create_tetromino(name, x + 1, y - 1, rotation);
+                    if (tetromino_invalid_position(game, &rotated_tetromino)) {
+                        /* Test 4. */
+                        rotated_tetromino = create_tetromino(name, x, y + 2, rotation);
+                        if (tetromino_invalid_position(game, &rotated_tetromino)) {
+                            /* Test 5. */
+                            rotated_tetromino = create_tetromino(name, x + 1, y + 2, rotation);
+                            if (tetromino_invalid_position(game, &rotated_tetromino)) {
+                                break;
+                            }
+                        }
+                    }
+                }
+                place_tetromino(game, &rotated_tetromino);
+                current_tetromino = rotated_tetromino;
+                return;
+            case 5:
+                /* Test 2. */
+                rotated_tetromino = create_tetromino(name, x - 1, y, rotation);
+                if (tetromino_invalid_position(game, &rotated_tetromino)) {
+                    /* Test 3. */
+                    rotated_tetromino = create_tetromino(name, x - 1, y + 1, rotation);
+                    if (tetromino_invalid_position(game, &rotated_tetromino)) {
+                        /* Test 4. */
+                        rotated_tetromino = create_tetromino(name, x, y - 2, rotation);
+                        if (tetromino_invalid_position(game, &rotated_tetromino)) {
+                            /* Test 5. */
+                            rotated_tetromino = create_tetromino(name, x - 1, y - 2, rotation);
+                            if (tetromino_invalid_position(game, &rotated_tetromino)) {
+                                break;
+                            }
+                        }
+                    }
+                }
+                place_tetromino(game, &rotated_tetromino);
+                current_tetromino = rotated_tetromino;
+                return;
+            case 6:
+                /* Test 2. */
+                rotated_tetromino = create_tetromino(name, x - 1, y, rotation);
+                if (tetromino_invalid_position(game, &rotated_tetromino)) {
+                    /* Test 3. */
+                    rotated_tetromino = create_tetromino(name, x - 1, y + 1, rotation);
+                    if (tetromino_invalid_position(game, &rotated_tetromino)) {
+                        /* Test 4. */
+                        rotated_tetromino = create_tetromino(name, x, y - 2, rotation);
+                        if (tetromino_invalid_position(game, &rotated_tetromino)) {
+                            /* Test 5. */
+                            rotated_tetromino = create_tetromino(name, x - 1, y - 2, rotation);
+                            if (tetromino_invalid_position(game, &rotated_tetromino)) {
+                                break;
+                            }
+                        }
+                    }
+                }
+                place_tetromino(game, &rotated_tetromino);
+                current_tetromino = rotated_tetromino;
+                return;
+            case 7:
+                /* Test 2. */
+                rotated_tetromino = create_tetromino(name, x + 1, y, rotation);
+                if (tetromino_invalid_position(game, &rotated_tetromino)) {
+                    /* Test 3. */
+                    rotated_tetromino = create_tetromino(name, x + 1, y - 1, rotation);
+                    if (tetromino_invalid_position(game, &rotated_tetromino)) {
+                        /* Test 4. */
+                        rotated_tetromino = create_tetromino(name, x, y + 2, rotation);
+                        if (tetromino_invalid_position(game, &rotated_tetromino)) {
+                            /* Test 5. */
+                            rotated_tetromino = create_tetromino(name, x + 1, y + 2, rotation);
+                            if (tetromino_invalid_position(game, &rotated_tetromino)) {
+                                break;
+                            }
+                        }
+                    }
+                }
+                place_tetromino(game, &rotated_tetromino);
+                current_tetromino = rotated_tetromino;
+                return;
+        }
+    }
+
+    /* I Wall kicks. */
+    if (name == I) {
+        switch (index) {
+            case 0:
+                /* Test 2. */
+                rotated_tetromino = create_tetromino(name, x - 2, y, rotation);
+                if (tetromino_invalid_position(game, &rotated_tetromino)) {
+                    /* Test 3. */
+                    rotated_tetromino = create_tetromino(name, x + 1, y, rotation);
+                    if (tetromino_invalid_position(game, &rotated_tetromino)) {
+                        /* Test 4. */
+                        rotated_tetromino = create_tetromino(name, x - 2, y + 1, rotation);
+                        if (tetromino_invalid_position(game, &rotated_tetromino)) {
+                            /* Test 5. */
+                            rotated_tetromino = create_tetromino(name, x + 1, y - 2, rotation);
+                            if (tetromino_invalid_position(game, &rotated_tetromino)) {
+                                break;
+                            }
+                        }
+                    }
+                }
+                place_tetromino(game, &rotated_tetromino);
+                current_tetromino = rotated_tetromino;
+                return;
+            case 1:
+                /* Test 2. */
+                rotated_tetromino = create_tetromino(name, x + 2, y, rotation);
+                if (tetromino_invalid_position(game, &rotated_tetromino)) {
+                    /* Test 3. */
+                    rotated_tetromino = create_tetromino(name, x - 1, y, rotation);
+                    if (tetromino_invalid_position(game, &rotated_tetromino)) {
+                        /* Test 4. */
+                        rotated_tetromino = create_tetromino(name, x + 2, y - 1, rotation);
+                        if (tetromino_invalid_position(game, &rotated_tetromino)) {
+                            /* Test 5. */
+                            rotated_tetromino = create_tetromino(name, x - 1, y + 2, rotation);
+                            if (tetromino_invalid_position(game, &rotated_tetromino)) {
+                                break;
+                            }
+                        }
+                    }
+                }
+                place_tetromino(game, &rotated_tetromino);
+                current_tetromino = rotated_tetromino;
+                return;
+            case 2:
+                /* Test 2. */
+                rotated_tetromino = create_tetromino(name, x - 1, y, rotation);
+                if (tetromino_invalid_position(game, &rotated_tetromino)) {
+                    /* Test 3. */
+                    rotated_tetromino = create_tetromino(name, x + 2, y, rotation);
+                    if (tetromino_invalid_position(game, &rotated_tetromino)) {
+                        /* Test 4. */
+                        rotated_tetromino = create_tetromino(name, x - 1, y - 2, rotation);
+                        if (tetromino_invalid_position(game, &rotated_tetromino)) {
+                            /* Test 5. */
+                            rotated_tetromino = create_tetromino(name, x + 2, y + 1, rotation);
+                            if (tetromino_invalid_position(game, &rotated_tetromino)) {
+                                break;
+                            }
+                        }
+                    }
+                }
+                place_tetromino(game, &rotated_tetromino);
+                current_tetromino = rotated_tetromino;
+                return;
+            case 3:
+                /* Test 2. */
+                rotated_tetromino = create_tetromino(name, x + 1, y, rotation);
+                if (tetromino_invalid_position(game, &rotated_tetromino)) {
+                    /* Test 3. */
+                    rotated_tetromino = create_tetromino(name, x - 2, y, rotation);
+                    if (tetromino_invalid_position(game, &rotated_tetromino)) {
+                        /* Test 4. */
+                        rotated_tetromino = create_tetromino(name, x + 1, y + 2, rotation);
+                        if (tetromino_invalid_position(game, &rotated_tetromino)) {
+                            /* Test 5. */
+                            rotated_tetromino = create_tetromino(name, x - 2, y - 1, rotation);
+                            if (tetromino_invalid_position(game, &rotated_tetromino)) {
+                                break;
+                            }
+                        }
+                    }
+                }
+                place_tetromino(game, &rotated_tetromino);
+                current_tetromino = rotated_tetromino;
+                return;
+            case 4:
+                /* Test 2. */
+                rotated_tetromino = create_tetromino(name, x + 2, y, rotation);
+                if (tetromino_invalid_position(game, &rotated_tetromino)) {
+                    /* Test 3. */
+                    rotated_tetromino = create_tetromino(name, x - 1, y, rotation);
+                    if (tetromino_invalid_position(game, &rotated_tetromino)) {
+                        /* Test 4. */
+                        rotated_tetromino = create_tetromino(name, x + 2, y - 1, rotation);
+                        if (tetromino_invalid_position(game, &rotated_tetromino)) {
+                            /* Test 5. */
+                            rotated_tetromino = create_tetromino(name, x - 1, y + 2, rotation);
+                            if (tetromino_invalid_position(game, &rotated_tetromino)) {
+                                break;
+                            }
+                        }
+                    }
+                }
+                place_tetromino(game, &rotated_tetromino);
+                current_tetromino = rotated_tetromino;
+                return;
+            case 5:
+                /* Test 2. */
+                rotated_tetromino = create_tetromino(name, x - 2, y, rotation);
+                if (tetromino_invalid_position(game, &rotated_tetromino)) {
+                    /* Test 3. */
+                    rotated_tetromino = create_tetromino(name, x + 1, y, rotation);
+                    if (tetromino_invalid_position(game, &rotated_tetromino)) {
+                        /* Test 4. */
+                        rotated_tetromino = create_tetromino(name, x - 2, y + 1, rotation);
+                        if (tetromino_invalid_position(game, &rotated_tetromino)) {
+                            /* Test 5. */
+                            rotated_tetromino = create_tetromino(name, x + 1, y - 2, rotation);
+                            if (tetromino_invalid_position(game, &rotated_tetromino)) {
+                                break;
+                            }
+                        }
+                    }
+                }
+                place_tetromino(game, &rotated_tetromino);
+                current_tetromino = rotated_tetromino;
+                return;
+            case 6:
+                /* Test 2. */
+                rotated_tetromino = create_tetromino(name, x + 1, y, rotation);
+                if (tetromino_invalid_position(game, &rotated_tetromino)) {
+                    /* Test 3. */
+                    rotated_tetromino = create_tetromino(name, x - 2, y, rotation);
+                    if (tetromino_invalid_position(game, &rotated_tetromino)) {
+                        /* Test 4. */
+                        rotated_tetromino = create_tetromino(name, x + 1, y + 2, rotation);
+                        if (tetromino_invalid_position(game, &rotated_tetromino)) {
+                            /* Test 5. */
+                            rotated_tetromino = create_tetromino(name, x - 2, y - 1, rotation);
+                            if (tetromino_invalid_position(game, &rotated_tetromino)) {
+                                break;
+                            }
+                        }
+                    }
+                }
+                place_tetromino(game, &rotated_tetromino);
+                current_tetromino = rotated_tetromino;
+                return;
+            case 7:
+                /* Test 2. */
+                rotated_tetromino = create_tetromino(name, x - 1, y, rotation);
+                if (tetromino_invalid_position(game, &rotated_tetromino)) {
+                    /* Test 3. */
+                    rotated_tetromino = create_tetromino(name, x + 2, y, rotation);
+                    if (tetromino_invalid_position(game, &rotated_tetromino)) {
+                        /* Test 4. */
+                        rotated_tetromino = create_tetromino(name, x - 1, y - 2, rotation);
+                        if (tetromino_invalid_position(game, &rotated_tetromino)) {
+                            /* Test 5. */
+                            rotated_tetromino = create_tetromino(name, x + 2, y + 1, rotation);
+                            if (tetromino_invalid_position(game, &rotated_tetromino)) {
+                                break;
+                            }
+                        }
+                    }
+                }
+                place_tetromino(game, &rotated_tetromino);
+                current_tetromino = rotated_tetromino;
+                return;
+        }
+    }
+
+
+    /* Try replacing the breaks in the switch statement above with this down here. */
+    place_tetromino(game, &current_tetromino);
+    return;
 }
 
 void fast_drop(game_t *game, int *frame) {
-    for (int i = 0; i < 20; i++) {
+    for (int i = 0; i < ROWS; i++) {
         move_tetromino(game, DOWN, 1);
     }
 
