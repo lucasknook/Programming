@@ -15,6 +15,27 @@ static tetromino_t current_tetromino;
 /* bag[BAG_SIZE + 1] keeps track of the amount of tetromino's in the bag. */
 int bag[BAG_SIZE + 1];
 
+/* Returns 1 on game over, 0 otherwise. */
+int check_game_over(game_t *game) {
+    /* Check for top out / tetris death. */
+    int oob_count = 0;
+    if (current_tetromino.y <= EXTRA_ROWS + 2) {
+        for (t_int i = 0; i < TETROMINO_GRID_WIDTH; i++) {
+            for (t_int j = 0; j < TETROMINO_GRID_WIDTH; j++) {
+                if (current_tetromino.squares[i][j] && current_tetromino.y - j < EXTRA_ROWS) {
+                    oob_count++;
+                }
+            }
+        }
+    }
+    if (oob_count == 4) {
+        game->status = ENDED;
+        return 1;
+    } else {
+        return 0;
+    }
+}
+
 void check_and_clear_lines(game_t *game) {
     for (g_int j = ROWS - 1; j > 0; j--) {
         int amount = 0;
@@ -62,13 +83,20 @@ int generate_random(int l, int r) {
 }
 
 void generate_bag(void) {
+    // bag[0] = I;
+    // bag[1] = J;
+    // bag[2] = L;
+    // bag[3] = O;
+    // bag[4] = S;
+    // bag[5] = T;
+    // bag[6] = Z;
     bag[0] = I;
-    bag[1] = J;
-    bag[2] = L;
-    bag[3] = O;
-    bag[4] = S;
-    bag[5] = T;
-    bag[6] = Z;
+    bag[1] = I;
+    bag[2] = I;
+    bag[3] = I;
+    bag[4] = I;
+    bag[5] = I;
+    bag[6] = I;
 
     /* Keeps track of the amount of tetromino's in the bag. */
     bag[7] = BAG_SIZE;
@@ -91,34 +119,6 @@ int generate_random_from_bag(void) {
     bag[BAG_SIZE] = bag[BAG_SIZE] - 1;
 
     return random_from_bag;
-}
-
-void place_random_tetronimo(game_t *game) {
-    /* Clear lines. */
-    check_and_clear_lines(game);
-
-    /* Place a new random tetronimo. */
-    int random = generate_random_from_bag();
-
-    if (random == I) {
-        current_tetromino = create_tetromino(random, 3, EXTRA_ROWS + 1, 0);
-    } else {
-        current_tetromino = create_tetromino(random, 3, EXTRA_ROWS, 0);
-    }
-    place_tetromino(game, &current_tetromino);
-}
-
-void remove_tetromino(game_t *game) {
-    g_int x = current_tetromino.x;
-    g_int y = current_tetromino.y;
-
-    for (t_int i = 0; i < TETROMINO_GRID_WIDTH; i++) {
-        for (t_int j = 0; j < TETROMINO_GRID_WIDTH; j++) {
-            if (current_tetromino.squares[i][j]) {
-                game->grid[x + i][y - j] = GREY;
-            }
-        }
-    }
 }
 
 /* Check if a tetromino is in a valid position. 
@@ -149,7 +149,43 @@ int tetromino_invalid_position(game_t *game, tetromino_t *tetromino) {
     return 0;
 }
 
-void move_tetromino(game_t *game, g_int dx, g_int dy, int check_valid) {
+void place_random_tetronimo(game_t *game) {
+    /* Clear lines. */
+    check_and_clear_lines(game);
+
+    if (check_game_over(game)) {
+        return;
+    }
+
+    /* Place a new random tetronimo. */
+    int random = generate_random_from_bag();
+
+    if (random == I) {
+        current_tetromino = create_tetromino(random, 3, EXTRA_ROWS + 1, 0);
+    } else {
+        current_tetromino = create_tetromino(random, 3, EXTRA_ROWS, 0);
+    }
+
+    while (tetromino_invalid_position(game, &current_tetromino)) {
+        current_tetromino = create_tetromino(random, 3, current_tetromino.y - 1, 0);
+    }
+    place_tetromino(game, &current_tetromino);
+}
+
+void remove_tetromino(game_t *game) {
+    g_int x = current_tetromino.x;
+    g_int y = current_tetromino.y;
+
+    for (t_int i = 0; i < TETROMINO_GRID_WIDTH; i++) {
+        for (t_int j = 0; j < TETROMINO_GRID_WIDTH; j++) {
+            if (current_tetromino.squares[i][j]) {
+                game->grid[x + i][y - j] = GREY;
+            }
+        }
+    }
+}
+
+void move_tetromino(game_t *game, g_int dx, g_int dy) {
     /* Create a new tetromino. */
     int name = current_tetromino.name;
 
@@ -164,7 +200,7 @@ void move_tetromino(game_t *game, g_int dx, g_int dy, int check_valid) {
     remove_tetromino(game);
 
     /* Check if the movement is valid. */
-    if (check_valid && tetromino_invalid_position(game, &moved_tetromino)) {
+    if (tetromino_invalid_position(game, &moved_tetromino)) {
         place_tetromino(game, &current_tetromino);
         return;
     }
@@ -612,7 +648,7 @@ void rotate_tetromino(game_t *game, int direction) {
 
 void fast_drop(game_t *game, int *frame) {
     for (int i = 0; i < ROWS; i++) {
-        move_tetromino(game, DOWN, 1);
+        move_tetromino(game, DOWN);
     }
 
     place_random_tetronimo(game);
@@ -625,8 +661,9 @@ void game_update(game_t *game, int *frame) {
         g_int x = current_tetromino.x;
         g_int y = current_tetromino.y;
 
-        move_tetromino(game, DOWN, 1);
+        move_tetromino(game, DOWN);
 
+        /* Lock piece and generate new one. */
         if (current_tetromino.x == x && current_tetromino.y == y) {
             place_random_tetronimo(game);
         }
@@ -642,7 +679,7 @@ void game_setup(game_t *game) {
 
     /* Set grid. */
     for (g_int i = 0; i < COLS; i++) {
-        for (g_int j = 0; j < ROWS; j++) {
+        for (g_int j = 0; j < ROWS + EXTRA_HIDDEN_ROWS; j++) {
             game->grid[i][j] = GREY;
         }
     }

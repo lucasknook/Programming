@@ -1,8 +1,11 @@
 #ifndef _GAME_H
 #define _GAME_H
 
-/* Extra rows where the blocks spawn. */
+/* Extra visible rows where the blocks spawn. */
 #define EXTRA_ROWS 4
+
+/* Extra rows where the blocks can still spawn, but are not visible any more */
+#define EXTRA_HIDDEN_ROWS 4
 
 /* Grid size. */
 #define COLS 10
@@ -24,7 +27,7 @@ typedef int t_int;
 
 /* Game struct. */
 typedef struct {
-    SDL_Color grid[COLS][ROWS + 2];
+    SDL_Color grid[COLS][ROWS + EXTRA_HIDDEN_ROWS];
     int status;
 } game_t;
 

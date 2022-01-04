@@ -14,7 +14,7 @@ void game_setup(game_t *game);
 
 void game_update(game_t *game, int *frame);
 
-void move_tetromino(game_t *game, int dx, int dy, int check_valid);
+void move_tetromino(game_t *game, int dx, int dy);
 
 void rotate_tetromino(game_t *game, int direction);
 
