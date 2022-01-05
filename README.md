@@ -8,15 +8,14 @@ Click on the side bar to submit a solution. A smiley face will show you if your 
 was correct.
 
 # Tetris (WIP)
+Tetris using the Super Rotation System.
+
 Controls:
 A and D: move piece left or right.
 S: soft drop.
 W: hard drop.
 ENTER: rotate piece clockwise.
 RIGHT SHIFT: rotate piece counter clockwise.
-
-In testing fase:
-Super Rotation System (SRS), to allow for wall kicks.
 
 To be implemented: 
 Scoreboard, hold pieces, better random generator.
