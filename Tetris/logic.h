@@ -16,9 +16,9 @@ void game_update(game_t *game, int *frame);
 
 void game_end(SDL_Renderer *renderer, game_t *game);
 
-void move_tetromino(game_t *game, int dx, int dy);
+void move_tetromino(game_t *game, int *frame, int dx, int dy);
 
-void rotate_tetromino(game_t *game, int direction);
+void rotate_tetromino(game_t *game, int *frame, int direction);
 
 void fast_drop(game_t *game, int *frame);
 

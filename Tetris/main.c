@@ -19,7 +19,8 @@ int main(int argc, char *argv[]) {
     game_t game;
     game_setup(&game);
 
-    int frame = 0;
+    /* Frame counter. */
+    int frame = 1;
 
     /* Event handler. */
     SDL_Event event;
@@ -31,27 +32,27 @@ int main(int argc, char *argv[]) {
                     break;
                 case SDL_KEYDOWN:
                     if (event.key.keysym.sym == SDLK_a) {                    
-                        move_tetromino(&game, LEFT);
+                        move_tetromino(&game, &frame, LEFT);
                         break;
                     }
 
                     if (event.key.keysym.sym == SDLK_d) {                    
-                        move_tetromino(&game, RIGHT);
+                        move_tetromino(&game, &frame, RIGHT);
                         break;
                     }
 
                     if (event.key.keysym.sym == SDLK_s) {                    
-                        move_tetromino(&game, DOWN);
+                        move_tetromino(&game, &frame, DOWN);
                         break;
                     }
 
                     if (event.key.keysym.sym == SDLK_RETURN) {                    
-                        rotate_tetromino(&game, 1);
+                        rotate_tetromino(&game, &frame, 1);
                         break;
                     }
 
                     if (event.key.keysym.sym == SDLK_RSHIFT) {                    
-                        rotate_tetromino(&game, 0);
+                        rotate_tetromino(&game, &frame, 0);
                         break;
                     }
 
@@ -70,6 +71,14 @@ int main(int argc, char *argv[]) {
 
         render_all(renderer, &game);
 
+        fprintf(stderr, "Frame: %d\n", frame);
+
+        /* Next frame. */
+        if (frame == 60) {
+            frame = 1;
+        } else {
+            frame++;
+        }
     }
     
     game_end(renderer, &game);

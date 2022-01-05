@@ -12,7 +12,7 @@
 #define ROWS (2 * COLS + EXTRA_ROWS)
 
 /* Game settings. */
-#define SPEED 60
+//#define SPEED 60
 
 /* Game states. */
 #define ONGOING 0

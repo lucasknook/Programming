@@ -1,5 +1,6 @@
 #include <SDL2/SDL.h>
 #include <time.h>
+#include <sys/time.h>
 
 #include "game.h"
 #include "rendering.h"
@@ -114,7 +115,7 @@ int generate_random_from_bag(void) {
     return random_from_bag;
 }
 
-/* Check if a tetromino is in a valid position. 
+/* Check if a tetromino is in an invalid position. 
  * If it is, return 1, otherise, return 0.
  */
 int tetromino_invalid_position(game_t *game, tetromino_t *tetromino) {
@@ -140,6 +141,22 @@ int tetromino_invalid_position(game_t *game, tetromino_t *tetromino) {
     }
 
     return 0;
+}
+
+void infinity_rule(game_t *game, tetromino_t *tetromino, int *frame) {
+    /* Create a tetromino one lower. */
+    int name = current_tetromino.name;
+
+    t_int x = current_tetromino.x;
+    t_int y = current_tetromino.y;
+
+    int rotation = current_tetromino.rotation;
+
+    /* Reset the lock delay. */
+    tetromino_t moved_tetromino = create_tetromino(name, x, y + 1, rotation);
+    if (tetromino_invalid_position(game, &moved_tetromino)) {
+        *frame = 0;
+    }
 }
 
 void place_random_tetronimo(game_t *game) {
@@ -178,7 +195,7 @@ void remove_tetromino(game_t *game) {
     }
 }
 
-void move_tetromino(game_t *game, g_int dx, g_int dy) {
+void move_tetromino(game_t *game, int *frame, g_int dx, g_int dy) {
     /* Create a new tetromino. */
     int name = current_tetromino.name;
 
@@ -197,6 +214,9 @@ void move_tetromino(game_t *game, g_int dx, g_int dy) {
         place_tetromino(game, &current_tetromino);
         return;
     }
+
+    /* Infinity rule. */
+    infinity_rule(game, &moved_tetromino, frame);
 
     /* Place the moved tetronimo and make it the current one. */
     place_tetromino(game, &moved_tetromino);
@@ -219,7 +239,7 @@ int new_rotation(int rotation, int direction) {
     return rotation - 1;
 }
 
-void rotate_tetromino(game_t *game, int direction) {
+void rotate_tetromino(game_t *game, int *frame, int direction) {
     if (current_tetromino.name == O) {
         return;
     }
@@ -633,7 +653,6 @@ void rotate_tetromino(game_t *game, int direction) {
         }
     }
 
-
     /* Try replacing the breaks in the switch statement above with this down here. */
     place_tetromino(game, &current_tetromino);
     return;
@@ -641,29 +660,37 @@ void rotate_tetromino(game_t *game, int direction) {
 
 void fast_drop(game_t *game, int *frame) {
     for (int i = 0; i < ROWS; i++) {
-        move_tetromino(game, DOWN);
+        move_tetromino(game, frame, DOWN);
     }
 
     place_random_tetronimo(game);
-    
+
+    /* Reset the frame counter. */
     *frame = 0;
 }
 
 void game_update(game_t *game, int *frame) {
-    if (*frame > SPEED) {
+    /* At frame = 30, check lock. */
+    if (*frame == 30) {
+
+    }
+
+    /* Look at the infinity rule thing. */
+
+    /* At frame = 60, move down and check lock. */
+    if (*frame == 60) {
         g_int x = current_tetromino.x;
         g_int y = current_tetromino.y;
 
-        move_tetromino(game, DOWN);
+        move_tetromino(game, frame, DOWN);
 
         /* Lock piece and generate new one. */
         if (current_tetromino.x == x && current_tetromino.y == y) {
             place_random_tetronimo(game);
-        }
 
-        *frame = 0;
-    } else {
-        *frame = *frame + 1;
+            /* Reset the frame counter. */
+            *frame = 0;
+        }
     }
 }
 
