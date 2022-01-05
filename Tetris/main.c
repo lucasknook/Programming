@@ -22,6 +22,10 @@ int main(int argc, char *argv[]) {
     /* Frame counter. */
     int frame = 1;
 
+    /* To make sure you cannot hold to rotate. */
+    int pressed_rotate_left = 0;
+    int pressed_rotate_right = 0;
+
     /* Event handler. */
     SDL_Event event;
     while (game.status == ONGOING) {
@@ -46,13 +50,15 @@ int main(int argc, char *argv[]) {
                         break;
                     }
 
-                    if (event.key.keysym.sym == SDLK_RETURN) {                    
+                    if (event.key.keysym.sym == SDLK_RETURN && !pressed_rotate_right) {                    
                         rotate_tetromino(&game, &frame, 1);
+                        pressed_rotate_right = 1;
                         break;
                     }
 
-                    if (event.key.keysym.sym == SDLK_RSHIFT) {                    
+                    if (event.key.keysym.sym == SDLK_RSHIFT && !pressed_rotate_left) {                    
                         rotate_tetromino(&game, &frame, 0);
+                        pressed_rotate_left = 1;
                         break;
                     }
 
@@ -62,6 +68,16 @@ int main(int argc, char *argv[]) {
                     }
 
                     break;
+                case SDL_KEYUP:
+                    if (event.key.keysym.sym == SDLK_RETURN) {                    
+                        pressed_rotate_right = 0;
+                        break;
+                    }
+
+                    if (event.key.keysym.sym == SDLK_RSHIFT) {                    
+                        pressed_rotate_left = 0;
+                        break;
+                    }
                 default:
                     break;
             }

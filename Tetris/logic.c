@@ -155,7 +155,7 @@ void infinity_rule(game_t *game, tetromino_t *tetromino, int *frame) {
     /* Reset the lock delay. */
     tetromino_t moved_tetromino = create_tetromino(name, x, y + 1, rotation);
     if (tetromino_invalid_position(game, &moved_tetromino)) {
-        *frame = 0;
+        *frame = 1;
     }
 }
 
@@ -240,9 +240,6 @@ int new_rotation(int rotation, int direction) {
 }
 
 void rotate_tetromino(game_t *game, int *frame, int direction) {
-    if (current_tetromino.name == O) {
-        return;
-    }
 
     /* Create a new tetromino. */
     int name = current_tetromino.name;
@@ -260,6 +257,9 @@ void rotate_tetromino(game_t *game, int *frame, int direction) {
 
     /* Check basic rotation. */
     if (!tetromino_invalid_position(game, &rotated_tetromino)) {
+
+        /* Infinity rule. */
+        infinity_rule(game, &rotated_tetromino, frame);
 
         /* Place the rotated tetronimo and make it the current one. */
         place_tetromino(game, &rotated_tetromino);
@@ -305,7 +305,19 @@ void rotate_tetromino(game_t *game, int *frame, int direction) {
         }
     }
 
-    /* J, L, T, S, Z Wall Kicks. */
+    /* O piece, no wall kicks */
+    if (name == O) {
+        /* Infinity rule. */
+        infinity_rule(game, &rotated_tetromino, frame);
+
+        /* Place the rotated tetronimo and make it the current one. */
+        place_tetromino(game, &rotated_tetromino);
+        current_tetromino = rotated_tetromino;
+
+        return;
+    }
+
+    /* J, L, T, S, Z wall kicks. */
     if (name != I) {
         switch (index) {
             case 0:
@@ -321,14 +333,13 @@ void rotate_tetromino(game_t *game, int *frame, int direction) {
                             /* Test 5. */
                             rotated_tetromino = create_tetromino(name, x - 1, y + 2, rotation);
                             if (tetromino_invalid_position(game, &rotated_tetromino)) {
-                                break;
+                                place_tetromino(game, &current_tetromino);
+                                return;
                             }
                         }
                     }
                 }
-                place_tetromino(game, &rotated_tetromino);
-                current_tetromino = rotated_tetromino;
-                return;
+                break;
             case 1:
                 /* Test 2. */
                 rotated_tetromino = create_tetromino(name, x + 1, y, rotation);
@@ -342,14 +353,13 @@ void rotate_tetromino(game_t *game, int *frame, int direction) {
                             /* Test 5. */
                             rotated_tetromino = create_tetromino(name, x + 1, y - 2, rotation);
                             if (tetromino_invalid_position(game, &rotated_tetromino)) {
-                                break;
+                                place_tetromino(game, &current_tetromino);
+                                return;
                             }
                         }
                     }
                 }
-                place_tetromino(game, &rotated_tetromino);
-                current_tetromino = rotated_tetromino;
-                return;
+                break;
             case 2:
                 /* Test 2. */
                 rotated_tetromino = create_tetromino(name, x + 1, y, rotation);
@@ -363,14 +373,13 @@ void rotate_tetromino(game_t *game, int *frame, int direction) {
                             /* Test 5. */
                             rotated_tetromino = create_tetromino(name, x + 1, y - 2, rotation);
                             if (tetromino_invalid_position(game, &rotated_tetromino)) {
-                                break;
+                                place_tetromino(game, &current_tetromino);
+                                return;
                             }
                         }
                     }
                 }
-                place_tetromino(game, &rotated_tetromino);
-                current_tetromino = rotated_tetromino;
-                return;
+                break;
             case 3:
                 /* Test 2. */
                 rotated_tetromino = create_tetromino(name, x - 1, y, rotation);
@@ -384,14 +393,13 @@ void rotate_tetromino(game_t *game, int *frame, int direction) {
                             /* Test 5. */
                             rotated_tetromino = create_tetromino(name, x - 1, y + 2, rotation);
                             if (tetromino_invalid_position(game, &rotated_tetromino)) {
-                                break;
+                                place_tetromino(game, &current_tetromino);
+                                return;
                             }
                         }
                     }
                 }
-                place_tetromino(game, &rotated_tetromino);
-                current_tetromino = rotated_tetromino;
-                return;
+                break;
             case 4:
                 /* Test 2. */
                 rotated_tetromino = create_tetromino(name, x + 1, y, rotation);
@@ -405,14 +413,13 @@ void rotate_tetromino(game_t *game, int *frame, int direction) {
                             /* Test 5. */
                             rotated_tetromino = create_tetromino(name, x + 1, y + 2, rotation);
                             if (tetromino_invalid_position(game, &rotated_tetromino)) {
-                                break;
+                                place_tetromino(game, &current_tetromino);
+                                return;
                             }
                         }
                     }
                 }
-                place_tetromino(game, &rotated_tetromino);
-                current_tetromino = rotated_tetromino;
-                return;
+                break;
             case 5:
                 /* Test 2. */
                 rotated_tetromino = create_tetromino(name, x - 1, y, rotation);
@@ -426,14 +433,13 @@ void rotate_tetromino(game_t *game, int *frame, int direction) {
                             /* Test 5. */
                             rotated_tetromino = create_tetromino(name, x - 1, y - 2, rotation);
                             if (tetromino_invalid_position(game, &rotated_tetromino)) {
-                                break;
+                                place_tetromino(game, &current_tetromino);
+                                return;
                             }
                         }
                     }
                 }
-                place_tetromino(game, &rotated_tetromino);
-                current_tetromino = rotated_tetromino;
-                return;
+                break;
             case 6:
                 /* Test 2. */
                 rotated_tetromino = create_tetromino(name, x - 1, y, rotation);
@@ -447,14 +453,13 @@ void rotate_tetromino(game_t *game, int *frame, int direction) {
                             /* Test 5. */
                             rotated_tetromino = create_tetromino(name, x - 1, y - 2, rotation);
                             if (tetromino_invalid_position(game, &rotated_tetromino)) {
-                                break;
+                                place_tetromino(game, &current_tetromino);
+                                return;
                             }
                         }
                     }
                 }
-                place_tetromino(game, &rotated_tetromino);
-                current_tetromino = rotated_tetromino;
-                return;
+                break;
             case 7:
                 /* Test 2. */
                 rotated_tetromino = create_tetromino(name, x + 1, y, rotation);
@@ -468,18 +473,17 @@ void rotate_tetromino(game_t *game, int *frame, int direction) {
                             /* Test 5. */
                             rotated_tetromino = create_tetromino(name, x + 1, y + 2, rotation);
                             if (tetromino_invalid_position(game, &rotated_tetromino)) {
-                                break;
+                                place_tetromino(game, &current_tetromino);
+                                return;
                             }
                         }
                     }
                 }
-                place_tetromino(game, &rotated_tetromino);
-                current_tetromino = rotated_tetromino;
-                return;
+                break;
         }
     }
 
-    /* I Wall kicks. */
+    /* I wall kicks. */
     if (name == I) {
         switch (index) {
             case 0:
@@ -495,14 +499,13 @@ void rotate_tetromino(game_t *game, int *frame, int direction) {
                             /* Test 5. */
                             rotated_tetromino = create_tetromino(name, x + 1, y - 2, rotation);
                             if (tetromino_invalid_position(game, &rotated_tetromino)) {
-                                break;
+                                place_tetromino(game, &current_tetromino);
+                                return;
                             }
                         }
                     }
                 }
-                place_tetromino(game, &rotated_tetromino);
-                current_tetromino = rotated_tetromino;
-                return;
+                break;
             case 1:
                 /* Test 2. */
                 rotated_tetromino = create_tetromino(name, x + 2, y, rotation);
@@ -516,14 +519,13 @@ void rotate_tetromino(game_t *game, int *frame, int direction) {
                             /* Test 5. */
                             rotated_tetromino = create_tetromino(name, x - 1, y + 2, rotation);
                             if (tetromino_invalid_position(game, &rotated_tetromino)) {
-                                break;
+                                place_tetromino(game, &current_tetromino);
+                                return;
                             }
                         }
                     }
                 }
-                place_tetromino(game, &rotated_tetromino);
-                current_tetromino = rotated_tetromino;
-                return;
+                break;
             case 2:
                 /* Test 2. */
                 rotated_tetromino = create_tetromino(name, x - 1, y, rotation);
@@ -537,14 +539,13 @@ void rotate_tetromino(game_t *game, int *frame, int direction) {
                             /* Test 5. */
                             rotated_tetromino = create_tetromino(name, x + 2, y + 1, rotation);
                             if (tetromino_invalid_position(game, &rotated_tetromino)) {
-                                break;
+                                place_tetromino(game, &current_tetromino);
+                                return;
                             }
                         }
                     }
                 }
-                place_tetromino(game, &rotated_tetromino);
-                current_tetromino = rotated_tetromino;
-                return;
+                break;
             case 3:
                 /* Test 2. */
                 rotated_tetromino = create_tetromino(name, x + 1, y, rotation);
@@ -558,14 +559,13 @@ void rotate_tetromino(game_t *game, int *frame, int direction) {
                             /* Test 5. */
                             rotated_tetromino = create_tetromino(name, x - 2, y - 1, rotation);
                             if (tetromino_invalid_position(game, &rotated_tetromino)) {
-                                break;
+                                place_tetromino(game, &current_tetromino);
+                                return;
                             }
                         }
                     }
                 }
-                place_tetromino(game, &rotated_tetromino);
-                current_tetromino = rotated_tetromino;
-                return;
+                break;
             case 4:
                 /* Test 2. */
                 rotated_tetromino = create_tetromino(name, x + 2, y, rotation);
@@ -579,14 +579,13 @@ void rotate_tetromino(game_t *game, int *frame, int direction) {
                             /* Test 5. */
                             rotated_tetromino = create_tetromino(name, x - 1, y + 2, rotation);
                             if (tetromino_invalid_position(game, &rotated_tetromino)) {
-                                break;
+                                place_tetromino(game, &current_tetromino);
+                                return;
                             }
                         }
                     }
                 }
-                place_tetromino(game, &rotated_tetromino);
-                current_tetromino = rotated_tetromino;
-                return;
+                break;
             case 5:
                 /* Test 2. */
                 rotated_tetromino = create_tetromino(name, x - 2, y, rotation);
@@ -600,14 +599,13 @@ void rotate_tetromino(game_t *game, int *frame, int direction) {
                             /* Test 5. */
                             rotated_tetromino = create_tetromino(name, x + 1, y - 2, rotation);
                             if (tetromino_invalid_position(game, &rotated_tetromino)) {
-                                break;
+                                place_tetromino(game, &current_tetromino);
+                                return;
                             }
                         }
                     }
                 }
-                place_tetromino(game, &rotated_tetromino);
-                current_tetromino = rotated_tetromino;
-                return;
+                break;
             case 6:
                 /* Test 2. */
                 rotated_tetromino = create_tetromino(name, x + 1, y, rotation);
@@ -621,14 +619,13 @@ void rotate_tetromino(game_t *game, int *frame, int direction) {
                             /* Test 5. */
                             rotated_tetromino = create_tetromino(name, x - 2, y - 1, rotation);
                             if (tetromino_invalid_position(game, &rotated_tetromino)) {
-                                break;
+                                place_tetromino(game, &current_tetromino);
+                                return;
                             }
                         }
                     }
                 }
-                place_tetromino(game, &rotated_tetromino);
-                current_tetromino = rotated_tetromino;
-                return;
+                break;
             case 7:
                 /* Test 2. */
                 rotated_tetromino = create_tetromino(name, x - 1, y, rotation);
@@ -642,20 +639,22 @@ void rotate_tetromino(game_t *game, int *frame, int direction) {
                             /* Test 5. */
                             rotated_tetromino = create_tetromino(name, x + 2, y + 1, rotation);
                             if (tetromino_invalid_position(game, &rotated_tetromino)) {
-                                break;
+                                place_tetromino(game, &current_tetromino);
+                                return;
                             }
                         }
                     }
                 }
-                place_tetromino(game, &rotated_tetromino);
-                current_tetromino = rotated_tetromino;
-                return;
+                break;
         }
     }
 
-    /* Try replacing the breaks in the switch statement above with this down here. */
-    place_tetromino(game, &current_tetromino);
-    return;
+    /* Infinity rule. */
+    infinity_rule(game, &rotated_tetromino, frame);
+
+    /* Place the rotated tetronimo and make it the current one. */
+    place_tetromino(game, &rotated_tetromino);
+    current_tetromino = rotated_tetromino;
 }
 
 void fast_drop(game_t *game, int *frame) {
@@ -666,7 +665,7 @@ void fast_drop(game_t *game, int *frame) {
     place_random_tetronimo(game);
 
     /* Reset the frame counter. */
-    *frame = 0;
+    *frame = 1;
 }
 
 void game_update(game_t *game, int *frame) {
@@ -689,7 +688,7 @@ void game_update(game_t *game, int *frame) {
             place_random_tetronimo(game);
 
             /* Reset the frame counter. */
-            *frame = 0;
+            *frame = 1;
         }
     }
 }
