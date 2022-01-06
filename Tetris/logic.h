@@ -22,4 +22,6 @@ void rotate_tetromino(game_t *game, int *frame, int direction);
 
 void fast_drop(game_t *game, int *frame);
 
+void hold_tetromino(game_t *game, int *frame);
+
 #endif

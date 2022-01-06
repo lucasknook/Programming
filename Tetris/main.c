@@ -22,9 +22,10 @@ int main(int argc, char *argv[]) {
     /* Frame counter. */
     int frame = 1;
 
-    /* To make sure you cannot hold to rotate. */
+    /* To make sure you cannot hold certain buttons. */
     int pressed_rotate_left = 0;
     int pressed_rotate_right = 0;
+    int pressed_hold = 0;
 
     /* Event handler. */
     SDL_Event event;
@@ -67,6 +68,11 @@ int main(int argc, char *argv[]) {
                         break;
                     }
 
+                    if (event.key.keysym.sym == SDLK_c && !pressed_hold) {
+                        hold_tetromino(&game, &frame);
+                        pressed_hold = 1;
+                    }
+
                     break;
                 case SDL_KEYUP:
                     if (event.key.keysym.sym == SDLK_RETURN) {                    
@@ -78,6 +84,11 @@ int main(int argc, char *argv[]) {
                         pressed_rotate_left = 0;
                         break;
                     }
+
+                    if (event.key.keysym.sym == SDLK_c) {                    
+                        pressed_hold = 0;
+                        break;
+                    }
                 default:
                     break;
             }
@@ -87,7 +98,8 @@ int main(int argc, char *argv[]) {
 
         render_all(renderer, &game);
 
-        fprintf(stderr, "Frame: %d\n", frame);
+        /* Debugging purposes. */
+        //fprintf(stderr, "Frame: %d\n", frame);
 
         /* Next frame. */
         if (frame == 60) {

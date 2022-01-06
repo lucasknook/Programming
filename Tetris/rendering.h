@@ -9,6 +9,9 @@
 #define WINDOW_POS_X 1200
 #define WINDOW_POS_Y 0
 
+/* Misc. */
+#define FPS 60
+
 /* Square size. */
 #define SQUARE_WIDTH (WINDOW_WIDTH / COLS)
 
