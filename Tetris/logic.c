@@ -24,10 +24,10 @@ int bag[BAG_SIZE + 1];
 int check_game_over(game_t *game) {
     /* Check for top out / tetris death. */
     int oob_count = 0;
-    if (current_tetromino.y <= EXTRA_ROWS + 2) {
+    if (current_tetromino.y < EXTRA_ROWS + EXTRA_HIDDEN_ROWS + 2) { // Could be < instead of <=
         for (t_int i = 0; i < TETROMINO_GRID_WIDTH; i++) {
             for (t_int j = 0; j < TETROMINO_GRID_WIDTH; j++) {
-                if (current_tetromino.squares[i][j] && current_tetromino.y - j < EXTRA_ROWS) {
+                if (current_tetromino.squares[i][j] && current_tetromino.y - j < (EXTRA_ROWS + EXTRA_HIDDEN_ROWS)) {
                     oob_count++;
                 }
             }
@@ -42,7 +42,7 @@ int check_game_over(game_t *game) {
 
 /* Only use in the spawn_new_tetromino function. */
 void check_and_clear_lines(game_t *game) {
-    for (g_int j = ROWS - 1; j > 0; j--) {
+    for (g_int j = ROWS + EXTRA_HIDDEN_ROWS - 1; j > EXTRA_HIDDEN_ROWS; j--) {
         int lines_cleared = 0;
         int amount = 0;
 
@@ -140,7 +140,7 @@ int tetromino_invalid_position(game_t *game, tetromino_t *tetromino) {
                     return 1;
                 }
 
-                if (tetromino->y - j >= ROWS) {
+                if (tetromino->y - j >= ROWS + EXTRA_HIDDEN_ROWS) {
                     return 1;
                 }
             }
@@ -171,9 +171,9 @@ void spawn_new_tetromino(game_t *game, int name) {
     check_and_clear_lines(game);
 
     if (name == I) {
-        current_tetromino = create_tetromino(name, 3, EXTRA_ROWS + 1, 0);
+        current_tetromino = create_tetromino(name, 3, EXTRA_ROWS + EXTRA_HIDDEN_ROWS + 1, 0);
     } else {
-        current_tetromino = create_tetromino(name, 3, EXTRA_ROWS, 0);
+        current_tetromino = create_tetromino(name, 3, EXTRA_ROWS + EXTRA_HIDDEN_ROWS, 0);
     }
 
     while (tetromino_invalid_position(game, &current_tetromino)) {
@@ -665,7 +665,7 @@ void rotate_tetromino(game_t *game, int *frame, int direction) {
 }
 
 void fast_drop(game_t *game, int *frame) {
-    for (int i = 0; i < ROWS; i++) {
+    for (int i = 0; i < ROWS + EXTRA_HIDDEN_ROWS; i++) {
         move_tetromino(game, frame, DOWN);
     }
 
@@ -787,7 +787,7 @@ void game_setup(game_t *game) {
 
 void game_end(SDL_Renderer *renderer, game_t *game) {
     if (game->status == GAME_OVER) {
-        for (int j = 0; j < ROWS; j++) {
+        for (int j = EXTRA_HIDDEN_ROWS; j < ROWS + EXTRA_HIDDEN_ROWS; j++) {
             for (int i = 0; i < COLS; i++) {
                 game->grid[i][j] = DARK_GREY;
                 render_all(renderer, game);
@@ -795,27 +795,26 @@ void game_end(SDL_Renderer *renderer, game_t *game) {
             }
         }
 
-        game->grid[3][9] = GREY;
-        game->grid[6][9] = GREY;
+        game->grid[3][13] = GREY;
+        game->grid[6][13] = GREY;
         render_all(renderer, game);
         SDL_Delay(10);
 
-        game->grid[3][10] = GREY;
-        game->grid[6][10] = GREY;
+        game->grid[3][14] = GREY;
+        game->grid[6][14] = GREY;
         render_all(renderer, game);
         SDL_Delay(20);
 
-        game->grid[3][12] = GREY;
-        game->grid[4][12] = GREY;
-        game->grid[5][12] = GREY;
-        game->grid[6][12] = GREY;
+        game->grid[3][16] = GREY;
+        game->grid[4][16] = GREY;
+        game->grid[5][16] = GREY;
+        game->grid[6][16] = GREY;
         render_all(renderer, game);
         SDL_Delay(10);
 
-        game->grid[2][13] = GREY;
-        game->grid[7][13] = GREY;
+        game->grid[2][17] = GREY;
+        game->grid[7][17] = GREY;
         render_all(renderer, game);
-        SDL_Delay(10);
 
         SDL_Delay(5000);
     }

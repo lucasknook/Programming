@@ -20,14 +20,14 @@ void render_square(SDL_Renderer *renderer, SDL_Color color, g_int x, g_int y) {
     rectangle.w = SQUARE_WIDTH;
     rectangle.h = SQUARE_WIDTH;
     rectangle.x = SQUARE_WIDTH * x;
-    rectangle.y = SQUARE_WIDTH * y;
+    rectangle.y = SQUARE_WIDTH * (y - EXTRA_HIDDEN_ROWS);
     
     /* Set rectangle background color (based on grid value). */
     SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, 255);
     /* Render rectangle background. */
     SDL_RenderFillRect(renderer, &rectangle);
 
-    if (!compare_colors(color, GREY) && y < EXTRA_ROWS) {
+    if (!compare_colors(color, GREY) && y < (EXTRA_ROWS + EXTRA_HIDDEN_ROWS)) {
         return;
     }
 
@@ -39,7 +39,7 @@ void render_square(SDL_Renderer *renderer, SDL_Color color, g_int x, g_int y) {
 
 void render_board(SDL_Renderer *renderer, game_t *game) {
     for (g_int i = 0; i < COLS; i++) {
-        for (g_int j = 0; j < ROWS; j++) {
+        for (g_int j = EXTRA_HIDDEN_ROWS; j < ROWS + EXTRA_HIDDEN_ROWS; j++) {
             render_square(renderer, game->grid[i][j], i, j);
         }
     }
