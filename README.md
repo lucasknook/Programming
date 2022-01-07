@@ -10,19 +10,20 @@ was correct.
 # Tetris (WIP)
 Tetris using the Super Rotation System.
 
-Controls:
-A and D: move piece left or right.
-S: soft drop.
-W: hard drop.
-ENTER: rotate piece clockwise.
-RIGHT SHIFT: rotate piece counter clockwise.
+Controls:  
+A and D: move piece left or right.  
+S: soft drop.  
+W: hard drop.  
+ENTER: rotate piece clockwise.  
+RIGHT SHIFT: rotate piece counter clockwise.  
+C: hold piece.  
 
-To be implemented: 
-Scoreboard, hold pieces, better random generator.
+To be implemented:  
+Scoreboard, better random generator.  
 
-WIP:
-Better random generator.
-Game over.
+WIP:  
+Better random generator.  
+Game over.  
 
 # Compiling
 To build these projects, a makefile is included. The makefiles also have options to cross compile for windows.

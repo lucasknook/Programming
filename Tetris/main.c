@@ -71,6 +71,7 @@ int main(int argc, char *argv[]) {
                     if (event.key.keysym.sym == SDLK_c && !pressed_hold) {
                         hold_tetromino(&game, &frame);
                         pressed_hold = 1;
+                        break;
                     }
 
                     break;

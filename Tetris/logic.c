@@ -34,15 +34,16 @@ int check_game_over(game_t *game) {
         }
     }
     if (oob_count == 4) {
-        game->status = GAME_OVER;
         return 1;
     } else {
         return 0;
     }
 }
 
+/* Only use in the spawn_new_tetromino function. */
 void check_and_clear_lines(game_t *game) {
     for (g_int j = ROWS - 1; j > 0; j--) {
+        int lines_cleared = 0;
         int amount = 0;
 
         for (g_int i = 0; i < COLS; i++) {
@@ -56,6 +57,8 @@ void check_and_clear_lines(game_t *game) {
             for (g_int i = 0; i < COLS; i++) {
                 game->grid[i][j] = GREY;
             }
+
+            lines_cleared++;
 
             /* Move everything above the line down. */
             for (g_int y = j; y > 0; y--) {
@@ -165,6 +168,8 @@ void infinity_rule(game_t *game, tetromino_t *tetromino, int *frame) {
 }
 
 void spawn_new_tetromino(game_t *game, int name) {
+    check_and_clear_lines(game);
+
     if (name == I) {
         current_tetromino = create_tetromino(name, 3, EXTRA_ROWS + 1, 0);
     } else {
@@ -177,15 +182,8 @@ void spawn_new_tetromino(game_t *game, int name) {
     place_tetromino(game, &current_tetromino);
 }
 
-void place_random_tetronimo(game_t *game) {
-    /* Clear lines. */
-    check_and_clear_lines(game);
-
-    if (check_game_over(game)) {
-        return;
-    }
-
-    /* Place a new random tetronimo. */
+void place_random_tetromino(game_t *game) {
+    /* Place a new random tetromino. */
     int random = generate_random_from_bag();
 
     spawn_new_tetromino(game, random);
@@ -227,7 +225,7 @@ void move_tetromino(game_t *game, int *frame, g_int dx, g_int dy) {
     /* Infinity rule. */
     infinity_rule(game, &moved_tetromino, frame);
 
-    /* Place the moved tetronimo and make it the current one. */
+    /* Place the moved tetromino and make it the current one. */
     place_tetromino(game, &moved_tetromino);
     current_tetromino = moved_tetromino;
 }
@@ -261,7 +259,7 @@ void rotate_tetromino(game_t *game, int *frame, int direction) {
 
     tetromino_t rotated_tetromino = create_tetromino(name, x, y, rotation);
 
-    /* Remove the old tetronimo. */
+    /* Remove the old tetromino. */
     remove_tetromino(game);
 
     /* Check basic rotation. */
@@ -270,7 +268,7 @@ void rotate_tetromino(game_t *game, int *frame, int direction) {
         /* Infinity rule. */
         infinity_rule(game, &rotated_tetromino, frame);
 
-        /* Place the rotated tetronimo and make it the current one. */
+        /* Place the rotated tetromino and make it the current one. */
         place_tetromino(game, &rotated_tetromino);
         current_tetromino = rotated_tetromino;
 
@@ -319,7 +317,7 @@ void rotate_tetromino(game_t *game, int *frame, int direction) {
         /* Infinity rule. */
         infinity_rule(game, &rotated_tetromino, frame);
 
-        /* Place the rotated tetronimo and make it the current one. */
+        /* Place the rotated tetromino and make it the current one. */
         place_tetromino(game, &rotated_tetromino);
         current_tetromino = rotated_tetromino;
 
@@ -661,7 +659,7 @@ void rotate_tetromino(game_t *game, int *frame, int direction) {
     /* Infinity rule. */
     infinity_rule(game, &rotated_tetromino, frame);
 
-    /* Place the rotated tetronimo and make it the current one. */
+    /* Place the rotated tetromino and make it the current one. */
     place_tetromino(game, &rotated_tetromino);
     current_tetromino = rotated_tetromino;
 }
@@ -671,12 +669,12 @@ void fast_drop(game_t *game, int *frame) {
         move_tetromino(game, frame, DOWN);
     }
 
-    place_random_tetronimo(game);
-
     /* Reset the frame counter. */
     *frame = 1;
     can_hold_tetromino = 1;
-    //previous_tick = 0;
+
+    /* Make the tetromino lock instantly. */
+    previous_tick = SDL_GetTicks() - LOCK_DELAY;
 }
 
 void hold_tetromino(game_t *game, int *frame) {
@@ -692,7 +690,7 @@ void hold_tetromino(game_t *game, int *frame) {
         held_tetromino = current_tetromino.name;
 
         remove_tetromino(game);
-            
+
         spawn_new_tetromino(game, new_tetromino);
     } else {
         /* Hold the piece. */
@@ -700,7 +698,7 @@ void hold_tetromino(game_t *game, int *frame) {
 
         remove_tetromino(game);
 
-        place_random_tetronimo(game);
+        place_random_tetromino(game);
     }
 
     /* Reset the frame counter. */
@@ -737,14 +735,22 @@ int check_tetromino_lock(game_t *game, tetromino_t *tetromino) {
 void game_update(game_t *game, int *frame) {
 
     if (check_tetromino_lock(game, &current_tetromino)) {
+        
         if (!previous_tick) {
             previous_tick = SDL_GetTicks();
             return;
         }
 
         /* Lock tetromino. */
-        if (SDL_GetTicks() - previous_tick >= 500) {
-            place_random_tetronimo(game);
+        if (SDL_GetTicks() - previous_tick >= LOCK_DELAY) {
+
+            if (check_game_over(game)) {
+                game->status = GAME_OVER;
+                return;
+            }
+
+            /* Also checks line clears. */
+            place_random_tetromino(game);            
 
             can_hold_tetromino = 1;
 
@@ -770,12 +776,8 @@ void game_setup(game_t *game) {
     }
 
     generate_bag();
-
-    /* Create dummy tetromino to not trigger the top out.
-     * Might change this in the future. 
-     */
     
-    place_random_tetronimo(game);
+    place_random_tetromino(game);
 
     held_tetromino = -1;
     can_hold_tetromino = 1;

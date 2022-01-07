@@ -12,6 +12,7 @@
 #define ROWS (2 * COLS + EXTRA_ROWS)
 
 /* Game settings. */
+#define LOCK_DELAY 500 // ms
 //#define SPEED 60
 
 /* Game states. */
